@@ -23,9 +23,9 @@ router.get('/tickets/:id/view', requireAuth, (req, res) => {
 
   res.send(`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kadro - Request #${ticket.id}</title><link rel="stylesheet" href="/style.css"></head>
+<title>Kadro - Request #${ticket.id}</title><link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css"></head>
 <body><div class="doc">
-<div class="topline"><a href="/app.html#/tickets">&larr; All requests</a><strong>Kadro</strong></div>
+<div class="topline"><a href="/app.html#/tickets">&larr; All requests</a><a href="/app.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit"><img src="/img/logo-mark.svg" width="26" height="26" alt=""><strong>Kadro</strong></a></div>
 <h1>#${ticket.id} ${escapeHtml(ticket.subject)}</h1>
 <div class="meta"><span>${escapeHtml(ticket.author)}</span><span class="chip ${escapeHtml(ticket.status)}">${escapeHtml(ticket.status.replace('_', ' '))}</span></div>
 <div class="body">${escapeHtml(ticket.body)}</div>

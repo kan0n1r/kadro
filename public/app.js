@@ -33,7 +33,11 @@ function toast(msg, isErr) {
 
 const initials = (n) => String(n).split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 const hue = (s) => [...String(s)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 360, 7);
-const avatar = (name, cls = '') => `<span class="avatar ${cls}" style="background:hsl(${hue(name)} 42% 38%)" aria-hidden="true">${esc(initials(name))}</span>`;
+const slug = (email) => String(email || '').split('@')[0].toLowerCase().replace(/[^a-z0-9_-]/g, '');
+const avatar = (name, cls = '', src = '') =>
+  `<span class="avatar ${cls}" style="background:hsl(${hue(name)} 42% 38%)" aria-hidden="true">${esc(initials(name))}${src ? `<img src="${esc(src)}" alt="">` : ''}</span>`;
+const person = (name, email, cls = '', src = '') => avatar(name, cls, src || (slug(email) ? `/img/avatars/${slug(email)}.svg` : ''));
+document.addEventListener('error', (e) => { if (e.target.tagName === 'IMG' && e.target.parentElement.classList.contains('avatar')) e.target.remove(); }, true);
 const chip = (s) => `<span class="chip ${esc(s)}">${esc(String(s).replace('_', ' '))}</span>`;
 const isStaff = () => ['hr', 'admin'].includes(me.role);
 const date = (s) => esc(String(s).slice(0, 10));
@@ -96,7 +100,7 @@ const pages = {
     const run = async (q) => {
       try {
         const rows = q ? await api('/api/employees/search?q=' + encodeURIComponent(q)) : await api('/api/employees');
-        $('#people').innerHTML = rows.length ? rows.map((p) => `<li>${avatar(p.full_name)}<div class="grow"><b>${esc(p.full_name)}</b><small>${esc(p.email)}</small></div><span class="chip">${esc(p.department)}</span></li>`).join('')
+        $('#people').innerHTML = rows.length ? rows.map((p) => `<li>${person(p.full_name, p.email, '', p.avatar_url)}<div class="grow"><b>${esc(p.full_name)}</b><small>${esc(p.email)}</small></div><span class="chip">${esc(p.department)}</span></li>`).join('')
           : '<li class="empty" style="display:block">No one matches that search.</li>';
       } catch (e) { $('#people').innerHTML = `<li class="empty" style="display:block">${esc(e.message)}</li>`; }
     };
@@ -148,7 +152,7 @@ const pages = {
     return `
       <div class="page-head"><div><h1>Users</h1><p>Manage roles</p></div></div>
       <section class="panel"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Department</th><th>Role</th></tr></thead><tbody>${users.map((u) =>
-        `<tr><td><div class="row" style="flex-wrap:nowrap">${avatar(u.full_name)}<div><b>${esc(u.full_name)}</b><br><small class="muted">${esc(u.email)}</small></div></div></td><td>${esc(u.department)}</td>
+        `<tr><td><div class="row" style="flex-wrap:nowrap">${person(u.full_name, u.email, '', u.avatar_url)}<div><b>${esc(u.full_name)}</b><br><small class="muted">${esc(u.email)}</small></div></div></td><td>${esc(u.department)}</td>
         <td><select data-role="${u.id}" aria-label="Role for ${esc(u.full_name)}" style="width:auto">${['employee', 'hr', 'admin'].map((r) => `<option ${r === u.role ? 'selected' : ''}>${r}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table></div></section>`;
   },
 
@@ -159,7 +163,7 @@ const pages = {
       <div class="page-head"><div><h1>Settings</h1><p>Your profile and preferences</p></div></div>
       <div class="grid two">
         <section class="panel"><h2>Profile</h2>
-          <div class="row" style="flex-wrap:nowrap;margin-bottom:12px">${prof.avatar_url ? `<img class="avatar lg" alt="" src="${esc(prof.avatar_url)}">` : avatar(prof.full_name, 'lg')}<div><b>${esc(prof.full_name)}</b><br><span class="muted">${esc(prof.email)}</span></div></div>
+          <div class="row" style="flex-wrap:nowrap;margin-bottom:12px">${avatar(prof.full_name, 'lg', prof.avatar_url)}<div><b>${esc(prof.full_name)}</b><br><span class="muted">${esc(prof.email)}</span></div></div>
           <p class="muted" style="margin:4px 0">Phone: ${esc(prof.phone || '-')}</p><p class="muted" style="margin:4px 0">Department: ${esc(prof.department)}</p>
           <form id="avatar"><label for="avatar-url">Import photo from URL</label><input id="avatar-url" type="url" placeholder="https://">
           <button class="btn ghost" style="margin-top:12px">Import photo</button></form><pre class="out" id="avatar-out" hidden></pre></section>
@@ -233,7 +237,7 @@ function renderShell() {
   const link = ([k, n]) => `<a href="#/${k}" data-k="${k}">${icon(k)}<span>${n}</span></a>`;
   $('#nav').innerHTML = items.map(link).join('') + (staff.length ? `<div class="nav-group">Management</div>` + staff.map(link).join('') : '') +
     '<div style="flex:1"></div>' + link(['settings', 'Settings']);
-  $('#me').innerHTML = `${avatar(me.fullName)}<div><b>${esc(me.fullName)}</b><small>${esc(me.role)}</small></div><button id="logout" title="Sign out" aria-label="Sign out">${icon('out')}</button>`;
+  $('#me').innerHTML = `${avatar(me.fullName, '', me.avatarUrl)}<div><b>${esc(me.fullName)}</b><small>${esc(me.role)}</small></div><button id="logout" title="Sign out" aria-label="Sign out">${icon('out')}</button>`;
   $('#logout').onclick = async () => { await fetch('/api/auth/logout', { method: 'POST' }); location.href = '/'; };
 }
 

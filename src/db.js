@@ -48,7 +48,7 @@ function seed() {
   if (n > 0) return;
 
   const addUser = db.prepare(
-    'INSERT INTO users (email, password, role, full_name, department, salary, phone) VALUES (?,?,?,?,?,?,?)'
+    'INSERT INTO users (email, password, role, full_name, department, salary, phone, avatar_url) VALUES (?,?,?,?,?,?,?,?)'
   );
   const users = [
     ['admin@corp.test', 'Admin#2024', 'admin', 'System Administrator', 'IT', 9000, '+380501110001'],
@@ -58,7 +58,9 @@ function seed() {
     ['carol@corp.test', 'carol2024', 'employee', 'Carol White', 'Finance', 6100, '+380501110005'],
     ['dave@corp.test', 'dave2024', 'employee', 'Dave Brown', 'Sales', 4300, '+380501110006'],
   ];
-  for (const u of users) addUser.run(u[0], hashPassword(u[1]), u[2], u[3], u[4], u[5], u[6]);
+  for (const u of users) {
+    addUser.run(u[0], hashPassword(u[1]), u[2], u[3], u[4], u[5], u[6], `/img/avatars/${u[0].split('@')[0]}.svg`);
+  }
 
   const addTicket = db.prepare('INSERT INTO tickets (author_id, subject, body, status) VALUES (?,?,?,?)');
   addTicket.run(3, 'Laptop replacement request', 'My laptop battery lasts less than an hour. Please arrange a replacement.', 'open');

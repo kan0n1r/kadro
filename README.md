@@ -102,6 +102,7 @@ src/
     debug.js           Diagnostics endpoint
   utils/               Hashing and HTML helpers
 public/                Login page, single-page app (app.js), styles
+  img/                 Logo, favicon and employee avatars (SVG)
 data/                  SQLite database (git-ignored)
 exports/               Generated report archives (git-ignored)
 ```

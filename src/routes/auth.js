@@ -23,9 +23,9 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/me', requireAuth, (req, res) => {
-  const u = db.prepare('SELECT id, email, role, full_name, department FROM users WHERE id = ?').get(req.user.id);
+  const u = db.prepare('SELECT id, email, role, full_name, department, avatar_url FROM users WHERE id = ?').get(req.user.id);
   if (!u) return res.status(404).json({ error: 'User not found' });
-  res.json({ id: u.id, email: u.email, role: u.role, fullName: u.full_name, department: u.department });
+  res.json({ id: u.id, email: u.email, role: u.role, fullName: u.full_name, department: u.department, avatarUrl: u.avatar_url });
 });
 
 router.post('/logout', (req, res) => {

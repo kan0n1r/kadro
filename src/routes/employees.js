@@ -6,7 +6,7 @@ const router = express.Router();
 router.use(requireAuth);
 
 router.get('/', (req, res) => {
-  const rows = db.prepare('SELECT id, full_name, email, department FROM users ORDER BY full_name').all();
+  const rows = db.prepare('SELECT id, full_name, email, department, avatar_url FROM users ORDER BY full_name').all();
   res.json(rows);
 });
 
