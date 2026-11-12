@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/img/logo.svg" alt="Kadro" width="260">
+</p>
+
 # Kadro
 
 Kadro is an HR and service-desk portal for a mid-sized company. Employees use it to file requests to HR and IT,
