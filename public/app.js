@@ -34,9 +34,10 @@ function toast(msg, isErr) {
 const initials = (n) => String(n).split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 const hue = (s) => [...String(s)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 360, 7);
 const slug = (email) => String(email || '').split('@')[0].toLowerCase().replace(/[^a-z0-9_-]/g, '');
+const localImg = (src) => (/^\/img\/[\w./-]+$/.test(String(src || '')) && !String(src).includes('..') ? src : '');
 const avatar = (name, cls = '', src = '') =>
-  `<span class="avatar ${cls}" style="background:hsl(${hue(name)} 42% 38%)" aria-hidden="true">${esc(initials(name))}${src ? `<img src="${esc(src)}" alt="">` : ''}</span>`;
-const person = (name, email, cls = '', src = '') => avatar(name, cls, src || (slug(email) ? `/img/avatars/${slug(email)}.svg` : ''));
+  `<span class="avatar ${cls}" style="background:hsl(${hue(name)} 42% 38%)" aria-hidden="true">${esc(initials(name))}${localImg(src) ? `<img src="${esc(localImg(src))}" alt="">` : ''}</span>`;
+const person = (name, email, cls = '', src = '') => avatar(name, cls, localImg(src) || (slug(email) ? `/img/avatars/${slug(email)}.svg` : ''));
 document.addEventListener('error', (e) => { if (e.target.tagName === 'IMG' && e.target.parentElement.classList.contains('avatar')) e.target.remove(); }, true);
 const chip = (s) => `<span class="chip ${esc(s)}">${esc(String(s).replace('_', ' '))}</span>`;
 const isStaff = () => ['hr', 'admin'].includes(me.role);
