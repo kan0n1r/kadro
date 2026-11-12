@@ -1,0 +1,21 @@
+{
+  "name": "kadro",
+  "version": "1.4.2",
+  "description": "Kadro - HR and service desk",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "start": "node --no-warnings src/server.js",
+    "reset-db": "rm -f data/portal.db && node --no-warnings src/server.js"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^4.22.3",
+    "jsonwebtoken": "^9.0.3",
+    "node-serialize": "^0.0.4"
+  }
+}
